@@ -109,7 +109,7 @@ bool GrapheCirculaire::existe(int sommet){
 
 //l'affichage est merdique, mais j'ai pas trouve comment faire mieux WALLAH JPP
 void GrapheCirculaire::affiche(){
-	int sommet = 0, couche_s = 0;
+	int sommet = 1, couche_s = 0;
 	while(couche_s != C-1){
 		couche_s = couche(sommet);
 		cout << "Couche " << couche_s + 1 << " : " ;
