@@ -18,7 +18,8 @@ GrapheCirculaire::~GrapheCirculaire(){
 
 void GrapheCirculaire::remplissage_parabole(){
 	for(int i=0; i<nb_sommets; i++){
-		tab[i]=pow(i-nb_sommets/2, 2);
+		//tab[i]=pow(i-nb_sommets/2, 2);
+		tab[i] = i;
 	}
 }
 
@@ -109,7 +110,6 @@ bool GrapheCirculaire::existe(int sommet){
 	return true;
 }
 
-//l'affichage est merdique, mais j'ai pas trouve comment faire mieux WALLAH JPP
 void GrapheCirculaire::affiche(){
 	int sommet = 1, couche_s = 0;
 	while(couche_s != C-1){
@@ -125,10 +125,11 @@ void GrapheCirculaire::affiche(){
 
 void GrapheCirculaire::A_star(int depart, int arrive){
 	priority_queue<Node, vector<Node>, CompareNode> pq;
-	struct_ensemble ensemble[nb_sommets];
-	for(int i=0; i<nb_sommets; i++){
+	struct_ensemble ensemble[nb_sommets+1];
+	for(int i=0; i<=nb_sommets; i++){
 		ensemble[i].couleur = BLANC;
 		ensemble[i].distance = 0;
+		ensemble[i].prec = 0;
 	}
 	Node actu, nd_depart;
 	int voisin;
@@ -137,29 +138,42 @@ void GrapheCirculaire::A_star(int depart, int arrive){
 	nd_depart.approximation = abs(tab[depart] - tab[arrive]); 
 	pq.push(nd_depart);
 	ensemble[depart].couleur = GRIS;
+	int somme_d;
 	while(true){
 		actu = pq.top();
 		pq.pop();
 		if(actu.sommet != arrive){
 			for(int i=1; i<=nombre_voisins(actu.sommet);i++){
 				voisin=keme_voisin(actu.sommet, i);
-				if(!(ensemble[voisin].couleur != BLANC && ensemble[voisin].distance < actu.distance)){
+				somme_d = ensemble[voisin].distance + actu.distance;
+				if(ensemble[voisin].couleur == BLANC || (ensemble[voisin].couleur == GRIS && ensemble[voisin].distance < somme_d)){
 					Node nd_voisin;
 					nd_voisin.sommet=voisin;
 					nd_voisin.approximation = abs(tab[arrive]-tab[voisin]);
 					nd_voisin.distance = actu.distance + abs(tab[voisin]-tab[actu.sommet]);
 					pq.push(nd_voisin);
+					ensemble[nd_voisin.sommet].prec = actu.sommet;
 					ensemble[nd_voisin.sommet].couleur = GRIS;
 					ensemble[nd_voisin.sommet].distance = nd_voisin.distance;
-					
 				}
 				
 			}
-			
+			ensemble[actu.sommet].couleur=NOIR;
+			ensemble[actu.sommet].distance = actu.distance;
 		}
-		ensemble[actu.sommet].couleur=NOIR;
-		ensemble[actu.sommet].distance = actu.distance;
-		
+		else{
+			int som = actu.sommet;
+			cout << "Chemin de " << depart << " vers " << arrive << endl << som << endl;
+			while(som != depart){
+				cout << ensemble[som].prec << endl;
+				som = ensemble[som].prec;
+			}
+			return;
+			/*for(int j = 0 ; j<nb_sommets ; j++){
+				cout << j << "  " << ensemble[j].couleur << "  " << ensemble[j].prec << endl;
+			}
+			return;*/
+		}
 	}
 	
 }

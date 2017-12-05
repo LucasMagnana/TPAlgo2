@@ -9,12 +9,12 @@ struct Node  {
 
 struct CompareNode{
 	bool operator()(Node const &n1, Node const &n2){
-			return n1.approximation < n2.approximation;
+			return n1.approximation > n2.approximation;
 	}
 };
 
 struct struct_ensemble {
-	int couleur, distance;
+	int couleur, distance, prec;
 };
 
 class GrapheCirculaire{
