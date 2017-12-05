@@ -124,6 +124,10 @@ void GrapheCirculaire::affiche(){
 }
 
 void GrapheCirculaire::A_star(int depart, int arrive){
+	if(!existe(depart) || !existe(arrive)){
+		cout << "Un des sommets n'existe pas !" << endl;
+		return ;
+	}
 	priority_queue<Node, vector<Node>, CompareNode> pq;
 	struct_ensemble ensemble[nb_sommets+1];
 	for(int i=0; i<=nb_sommets; i++){
