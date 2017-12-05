@@ -1,5 +1,7 @@
 #include<iostream>
+#include<stdlib.h>
 #include<math.h>
+#include<queue>
 #include "GrapheCirculaire.h"
 
 using namespace std;
@@ -120,5 +122,48 @@ void GrapheCirculaire::affiche(){
 		cout << endl;
 	}
 }
+
+void GrapheCirculaire::A_star(int depart, int arrive){
+	priority_queue<Node, vector<Node>, CompareNode> pq;
+	struct_ensemble ensemble[nb_sommets];
+	for(int i=0; i<nb_sommets; i++){
+		ensemble[i].couleur = BLANC;
+		ensemble[i].distance = 0;
+	}
+	Node actu, nd_depart;
+	int voisin;
+	nd_depart.sommet = depart;
+	nd_depart.distance = 0;
+	nd_depart.approximation = abs(tab[depart] - tab[arrive]); 
+	pq.push(nd_depart);
+	ensemble[depart].couleur = GRIS;
+	while(true){
+		actu = pq.top();
+		pq.pop();
+		if(actu.sommet != arrive){
+			for(int i=1; i<=nombre_voisins(actu.sommet);i++){
+				voisin=keme_voisin(actu.sommet, i);
+				if(!(ensemble[voisin].couleur != BLANC && ensemble[voisin].distance < actu.distance)){
+					Node nd_voisin;
+					nd_voisin.sommet=voisin;
+					nd_voisin.approximation = abs(tab[arrive]-tab[voisin]);
+					nd_voisin.distance = actu.distance + abs(tab[voisin]-tab[actu.sommet]);
+					pq.push(nd_voisin);
+					ensemble[nd_voisin.sommet].couleur = GRIS;
+					ensemble[nd_voisin.sommet].distance = nd_voisin.distance;
+					
+				}
+				
+			}
+			
+		}
+		ensemble[actu.sommet].couleur=NOIR;
+		ensemble[actu.sommet].distance = actu.distance;
+		
+	}
+	
+}
+
+
 
 
